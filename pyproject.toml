@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+extend-exclude = ["src/app/migrations"]
+
+lint.select = ["E", "F", "I", "UP", "B"]
+lint.ignore = ["E501"]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
+known-first-party = ["app"]

@@ -1,7 +1,6 @@
-from fastapi import FastAPI
-
 from apps.agent.api.routes import agent
 from apps.agent.core.config import settings
+from fastapi import FastAPI
 
 app = FastAPI(title="LangChain Agent Service")
 app.include_router(agent.router, prefix="/v1/agent", tags=["agent"])

@@ -1,12 +1,10 @@
 from __future__ import annotations
 
-from langchain_openai import ChatOpenAI
-from langgraph.graph import StateGraph, START, END
-from langgraph.checkpoint.memory import MemorySaver
-
 from apps.agent.llm.factory import _make_llm
-from apps.agent.llm.tools import fetch_stats, compute_kpis, compute_conclusions
+from apps.agent.llm.tools import compute_conclusions, compute_kpis, fetch_stats
 from apps.agent.schemas.agent import AgentState
+from langgraph.checkpoint.memory import MemorySaver
+from langgraph.graph import END, START, StateGraph
 
 
 def node_fetch_rows(state: AgentState) -> AgentState:
@@ -17,11 +15,13 @@ def node_fetch_rows(state: AgentState) -> AgentState:
     Returns:
         AgentState: Updated state with 'rows'.
     """
-    rows = fetch_stats.invoke({
-        "user_id": state["user_id"],
-        "start": state["start"],
-        "end": state["end"],
-    })
+    rows = fetch_stats.invoke(
+        {
+            "user_id": state["user_id"],
+            "start": state["start"],
+            "end": state["end"],
+        }
+    )
     return {"rows": rows}
 
 
@@ -47,10 +47,9 @@ def node_conclude(state: AgentState) -> AgentState:
     """
 
     # Use the conclusions tool
-    concl = compute_conclusions.invoke({
-        "kpis": state["kpis"],
-        "goal": state.get("goal", "general")
-    })
+    concl = compute_conclusions.invoke(
+        {"kpis": state["kpis"], "goal": state.get("goal", "general")}
+    )
     answer_text = concl.get("advice", "Sin conclusiones.")
 
     # Optionally, refine with LLM for better formatting

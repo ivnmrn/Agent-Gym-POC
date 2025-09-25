@@ -1,5 +1,6 @@
-from pydantic import BaseModel
 from typing import Any, Dict, Optional
+
+from pydantic import BaseModel
 
 
 class SummaryRequest(BaseModel):
@@ -9,6 +10,7 @@ class SummaryRequest(BaseModel):
     end: str
     goal: Optional[str] = None
     question: str = "Resumen del periodo"
+
 
 class SummaryResponse(BaseModel):
 

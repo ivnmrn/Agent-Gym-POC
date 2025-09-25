@@ -1,14 +1,17 @@
 from functools import lru_cache
-from fastapi import APIRouter
+
 from apps.agent.llm.graph import build_agent_graph
 from apps.agent.schemas.responses import SummaryRequest, SummaryResponse
+from fastapi import APIRouter
 
 router = APIRouter(prefix="/v1/agent", tags=["agent"])
+
 
 @lru_cache
 def _graph():
     """Cached graph instance."""
     return build_agent_graph()
+
 
 @router.post("/summary", response_model=SummaryResponse, status_code=200)
 def summary(body: SummaryRequest):

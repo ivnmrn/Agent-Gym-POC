@@ -1,5 +1,6 @@
 from apps.agent.core.config import settings
 
+
 def _make_llm():
     """Instanciate a LLM based on settings."""
 
