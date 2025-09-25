@@ -1,0 +1,18 @@
+# Web API
+fastapi>=0.110,<0.116
+uvicorn[standard]>=0.29,<0.33
+
+# Config
+pydantic>=2.6,<3
+pydantic-settings>=2.2,<3
+python-dotenv>=1.0,<2
+
+# HTTP + Data
+requests>=2.31,<3
+pandas>=2.2,<3
+
+# LangChain stack
+langchain>=0.2.11,<0.3
+langgraph>=0.0.66,<0.1
+langchain-openai>=0.1.17,<0.2
+openai>=1.35,<2
