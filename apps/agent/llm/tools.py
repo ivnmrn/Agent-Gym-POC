@@ -7,14 +7,6 @@ from langchain.tools import tool
 API_BASE = os.getenv("STATS_API_BASE_URL", "http://api:8000")
 
 
-class Tools:
-    """Collection of tools for the agent."""
-
-    @staticmethod
-    def list_tools():
-        return [fetch_stats, compute_kpis, compute_conclusions]
-
-
 @tool("fetch_stats")
 def fetch_stats(user_id: str, start: str, end: str) -> list:
     """
