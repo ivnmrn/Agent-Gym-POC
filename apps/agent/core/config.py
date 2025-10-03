@@ -16,5 +16,11 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = None
     API_V1: str = "/api/v1"
 
+    LANGFUSE_SECRET_API_KEY: str = None
+    LANGFUSE_PUBLIC_API_KEY: str = None
+    LANGFUSE_SERVER_URL: str = None
+
+    AGENT_GYM_PROMPT_NAME: str = None
+
 
 settings = Settings()
