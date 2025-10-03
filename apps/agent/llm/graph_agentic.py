@@ -21,6 +21,8 @@ from langchain_core.messages import (
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 
+logger = settings.get_logger(__name__)
+
 
 def _ensure_messages(state: AgentState) -> list:
     """Ensure the state has a messages list, initializing if necessary.
@@ -32,7 +34,13 @@ def _ensure_messages(state: AgentState) -> list:
     """
 
     messages = state.get("messages") or []
-    prompt = retrieve_prompt(settings.AGENT_GYM_PROMPT_NAME) or SYSTEM_PROMPT
+    prompt = retrieve_prompt(settings.AGENT_GYM_PROMPT_NAME)
+    if not prompt:
+        logger.info(
+            "retrieve_prompt failed for AGENT_GYM_PROMPT_NAME=%s", settings.AGENT_GYM_PROMPT_NAME
+        )
+        prompt = SYSTEM_PROMPT
+
     if not messages:
         user_text = (
             f"Pregunta: {state.get('input','')}\n"
