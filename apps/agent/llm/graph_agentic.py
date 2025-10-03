@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import logging
 
 from apps.agent.core.config import settings
 from apps.agent.llm.constants import (
@@ -21,7 +22,7 @@ from langchain_core.messages import (
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
 
-logger = settings.get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 def _ensure_messages(state: AgentState) -> list:
