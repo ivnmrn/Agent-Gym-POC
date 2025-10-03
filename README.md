@@ -57,7 +57,7 @@ Create an .env
 
 ```bash
 # Orchestration
-AGENT_MODE=graph    # graph (LangGraph) or agentic (ReAct)
+AGENT_MODE=agentic     # use non deterministic graph
 
 # LLM (choose one)
 LLM_PROVIDER=openai    # openai | ollama
