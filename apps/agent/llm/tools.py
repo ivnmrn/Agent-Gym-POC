@@ -1,5 +1,4 @@
 import os
-from typing import Any, Dict, List
 
 import pandas as pd
 import requests
@@ -9,8 +8,26 @@ API_BASE = os.getenv("STATS_API_BASE_URL", "http://api:8000")
 
 
 @tool("fetch_stats")
-def fetch_stats(user_id: str, start: str, end: str) -> List[Dict[str, Any]]:
-    """Fetch user stats from external API."""
+def fetch_stats(user_id: str, start: str, end: str) -> list:
+    """
+    NAME: fetch_stats
+    PURPOSE: Get raw training rows from the Statistics API for the given user and date range.
+
+    WHEN TO USE:
+      - First step when you need data. Call this BEFORE computing KPIs.
+      - If you don't have `rows` yet or you suspect they are outdated.
+
+    INPUTS:
+      - user_id (str): user identifier.
+      - start (str): inclusive ISO date 'YYYY-MM-DD'.
+      - end   (str): inclusive ISO date 'YYYY-MM-DD'.
+
+    RETURNS:
+      - List[Row]: each row has {date, exercise, muscle_group, weight, reps, set, rpe, rir, ...}
+
+    EXAMPLE CALL:
+      fetch_stats({"user_id":"123","start":"2025-09-01","end":"2025-09-25"})
+    """
 
     url = f"{API_BASE}/api/v1/statistics/{user_id}/stats"
     headers = {
@@ -29,8 +46,24 @@ def fetch_stats(user_id: str, start: str, end: str) -> List[Dict[str, Any]]:
 
 
 @tool("compute_kpis")
-def compute_kpis(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """Compute KPIs from stats rows."""
+def compute_kpis(rows: list) -> dict:
+    """
+    NAME: compute_conclusions
+    PURPOSE: Turn KPIs into actionable advice given the user's goal.
+
+    PRECONDITION:
+      - Must be called ONLY IF `kpis` is already available (output of compute_kpis).
+
+    INPUTS:
+      - kpis (dict): result from compute_kpis
+      - goal (str): e.g., "fuerza", "hipertrofia", etc.
+
+    RETURNS:
+      - { advice: str }
+
+    EXAMPLE CALL:
+      compute_conclusions({"kpis":{...}, "goal":"fuerza"})
+    """
     df = pd.DataFrame(rows)
     if df.empty:
         return {"summary": "sin datos", "by_muscle": [], "alerts": []}
@@ -95,8 +128,24 @@ def compute_kpis(rows: List[Dict[str, Any]]) -> Dict[str, Any]:
 
 
 @tool("compute_conclusions")
-def compute_conclusions(kpis: Dict[str, Any], goal: str) -> Dict[str, Any]:
-    """Compute conclusions based on KPIs and user goal."""
+def compute_conclusions(kpis: dict, goal: str) -> dict:
+    """
+    NAME: compute_conclusions
+    PURPOSE: Turn KPIs into actionable advice given the user's goal.
+
+    PRECONDITION:
+      - Must be called ONLY IF `kpis` is already available (output of compute_kpis).
+
+    INPUTS:
+      - kpis (dict): result from compute_kpis
+      - goal (str): e.g., "fuerza", "hipertrofia", etc.
+
+    RETURNS:
+      - { advice: str }
+
+    EXAMPLE CALL:
+      compute_conclusions({"kpis":{...}, "goal":"fuerza"})
+    """
     advice = []
     if not kpis or kpis.get("summary") == "sin datos":
         return {"advice": "No hay datos disponibles para el periodo."}

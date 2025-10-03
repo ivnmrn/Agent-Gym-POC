@@ -65,7 +65,7 @@ def node_conclude(state: AgentState) -> AgentState:
     return {"answer": answer_text}
 
 
-def build_agent_graph():
+def build_deterministic_agent_graph():
     """Builds and compiles the agent's state graph."""
     g = StateGraph(AgentState)
 
