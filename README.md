@@ -50,6 +50,8 @@ APP: exposes REST endpoints. No AI dependency.
 
 * OpenAI API Key (if using OpenAI) or an Ollama server with a small model (if using Ollama)
 
+* Langfuse credentials if you are using the service as agentic mode 
+
 
 ## Enviorment
 
@@ -69,6 +71,14 @@ OLLAMA_MODEL=llama3.1:8b-instruct-q4_K_M
 
 # From inside the AGENT container, call APP by service name + internal port
 STATS_API_BASE_URL=http://api:8000
+
+# Langfuse
+LANGFUSE_SECRET_API_KEY=sk-lf-...
+LANGFUSE_PUBLIC_API_KEY=pk-lf-...
+LANGFUSE_SERVER_URL=https://cloud.langfuse.com
+
+# Prompt Names
+AGENT_GYM_PROMPT_NAME=Agent-Gym-Prompt
 ````
 
 ## Installation
