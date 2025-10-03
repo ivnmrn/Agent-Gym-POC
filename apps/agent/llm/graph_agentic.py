@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import json
 
+from apps.agent.core.config import settings
 from apps.agent.llm.constants import (
     CONTENT_ERROR_KPIS_REQUIRE_ROWS,
     CONTENT_ERROR_KPIS_REQUIRED,
     SYSTEM_PROMPT,
 )
 from apps.agent.llm.factory import _make_llm
+from apps.agent.llm.prompt import retrieve_prompt
 from apps.agent.llm.tools_registry import TOOLS
 from apps.agent.schemas.agent import AgentState
 from langchain_core.messages import (
@@ -18,6 +20,8 @@ from langchain_core.messages import (
 )
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, START, StateGraph
+
+logger = settings.get_logger(__name__)
 
 
 def _ensure_messages(state: AgentState) -> list:
@@ -30,6 +34,13 @@ def _ensure_messages(state: AgentState) -> list:
     """
 
     messages = state.get("messages") or []
+    prompt = retrieve_prompt(settings.AGENT_GYM_PROMPT_NAME)
+    if not prompt:
+        logger.info(
+            "retrieve_prompt failed for AGENT_GYM_PROMPT_NAME=%s", settings.AGENT_GYM_PROMPT_NAME
+        )
+        prompt = SYSTEM_PROMPT
+
     if not messages:
         user_text = (
             f"Pregunta: {state.get('input','')}\n"
@@ -38,7 +49,7 @@ def _ensure_messages(state: AgentState) -> list:
             f"objetivo={state.get('goal')}\n"
             f"Estado: rows={bool(state.get('rows'))}, kpis={bool(state.get('kpis'))}"
         )
-        messages = [SystemMessage(content=SYSTEM_PROMPT), HumanMessage(content=user_text)]
+        messages = [SystemMessage(content=prompt), HumanMessage(content=user_text)]
     return messages
 
 
